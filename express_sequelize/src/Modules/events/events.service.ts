@@ -1,4 +1,6 @@
+import { Op } from 'sequelize';
 import Event from './entities/event.entity';
+import Workshop from './entities/workshop.entity';
 
 
 export class EventsService {
@@ -9,7 +11,7 @@ export class EventsService {
 
   /* TODO: complete getEventsWithWorkshops so that it returns all events including the workshops
     Requirements:
-    - maximum 2 sql queries
+    - maximum 2 sql queriesgetEventsWithWorkshopsgetEventsWithWorkshops
     - verify your solution with `npm run test`
     - do a `git commit && git push` after you are done or when the time limit is over
     - Don't post process query result in javascript
@@ -85,7 +87,8 @@ export class EventsService {
      */
 
   async getEventsWithWorkshops() {
-    throw new Error('TODO task 1');
+    return await Event.findAll({ include: ["workshops"] });
+    // throw new Error('TODO task 1');
   }
 
   /* TODO: complete getFutureEventWithWorkshops so that it returns events with workshops, that have not yet started
@@ -155,6 +158,17 @@ export class EventsService {
     ```
      */
   async getFutureEventWithWorkshops() {
-    throw new Error('TODO task 2');
+    return await Event.findAll({ 
+      include: [
+        {
+          model: Workshop, 
+          where: {
+            start: {
+              [Op.gt]: Date.now()
+            }
+          }
+        }
+      ]
+     });
   }
 }
